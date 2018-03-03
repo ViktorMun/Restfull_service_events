@@ -4,7 +4,7 @@ const cors = require('cors')
 const db = require('./models')
 const Sequelize = require('sequelize')
 
-const port = process.env.PORT || 4001
+const port = process.env.PORT || 4444
 
 const app = express()
   .use(cors())
@@ -23,6 +23,19 @@ app.use(function(req, res, next) {
 })
 
 app.use(bodyParser.json())
+
+app.get('/allevents', (req, res) => {
+  const allevents = Allevents
+    .findAll()
+    .then((allevents) => {
+      res.json(allevents)
+    })
+    .catch((err) => {
+      console.error(err)
+      res.status(500)
+      res.json({ message: 'Oops! There was an error getting the products. Please try again' })
+    })
+})
 
 
 app.listen(port, () => {
