@@ -3,7 +3,7 @@ const bodyParser = require('body-parser')
 const cors = require('cors')
 const db = require('./models')
 const Sequelize = require('sequelize')
-
+const Op = Sequelize.Op
 const port = process.env.PORT || 4444
 
 const app = express()
@@ -28,9 +28,14 @@ app.use(bodyParser.json())
 //Find all events
 app.get('/allevents', (req, res) => {
   const allevents = Allevents
-    .findAll()
+    .findAll({
+  attributes: ['title', 'startdate', 'enddate'],
+  where: {startdate: {
+           [Op.gt]: new Date()}
+ }})
     .then((allevents) => {
-      res.json(allevents)
+  res.json(allevents)
+      ;
     })
     .catch((err) => {
       console.error(err)
@@ -41,10 +46,8 @@ app.get('/allevents', (req, res) => {
 
 //Find event by id
 app.get('/allevents/:id', (req, res) => {
-
   const oneevent = Allevents
     .findById(req.params.id)
-
     .then((Allevents) => {
       if (Allevents) {
         res.json(Allevents)
@@ -60,14 +63,22 @@ app.get('/allevents/:id', (req, res) => {
     })
 })
 
+
+var date = Date.now();
+//var startTime = startDate.getTime(), endTime = endDate.getTime();
+
+
+
 //Create event
 app.post('/allevents', (req, res) => {
+
   const newevent = req.body
 
   Allevents.create(Allevents)
     .then(entity => {
       res.status(201)
       res.json(entity)
+      //if (startTime>endTime) {alert("Cannot ")}
     })
     .catch(err => {
       res.status(422)
