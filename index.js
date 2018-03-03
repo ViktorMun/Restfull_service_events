@@ -24,6 +24,8 @@ app.use(function(req, res, next) {
 
 app.use(bodyParser.json())
 
+
+//Find all events
 app.get('/allevents', (req, res) => {
   const allevents = Allevents
     .findAll()
@@ -33,9 +35,32 @@ app.get('/allevents', (req, res) => {
     .catch((err) => {
       console.error(err)
       res.status(500)
-      res.json({ message: 'Oops! There was an error getting the products. Please try again' })
+      res.json({ message: 'Oops! There was an error getting the events. Please try again' })
     })
 })
+
+//Find event by id
+app.get('/allevents/:id', (req, res) => {
+
+  const allevents = Allevents
+    .findById(req.params.id)
+
+    .then((Allevents) => {
+      if (Allevents) {
+        res.json(Allevents)
+      } else {
+        res.status(404)
+        res.json({ message: 'product not found!' })
+      }
+    })
+    .catch((err) => {
+      console.error(err)
+      res.status(500)
+      res.json({ message: 'Oops! There was an error getting the event. Please try again' })
+    })
+})
+
+
 
 
 app.listen(port, () => {
