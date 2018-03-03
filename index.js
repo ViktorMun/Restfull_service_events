@@ -24,6 +24,7 @@ app.use(function(req, res, next) {
 
 app.use(bodyParser.json())
 console.log(new Date())
+var currentDate=new Date();
 
 //Find all events
 app.get('/allevents', (req, res) => {
@@ -63,10 +64,30 @@ app.get('/allevents/:id', (req, res) => {
 })
 
 
-//Create event
+// Create event
+// app.post('/allevents', (req, res) => {
+//   const newevent = req.body
+//   console.log(newevent)
+//   Allevents.create(newevent)
+//     .then(entity => {
+//       res.status(201)
+//       res.json(entity)
+//     })
+//     .catch(err => {
+//       res.status(422)
+//       res.json({ message: err.message })
+//     })
+// })
+
+// Create event
 app.post('/allevents', (req, res) => {
   const newevent = req.body
-  console.log(newevent)
+  console.log(req.body.startdate)
+if (req.body.startdate>req.body.enddate)
+return console.log('Start date should not be before the end date')
+//if (req.body.startdate )
+//return console.log('wrong again')
+else
   Allevents.create(newevent)
     .then(entity => {
       res.status(201)
@@ -78,34 +99,26 @@ app.post('/allevents', (req, res) => {
     })
 })
 
+
 //change event
-app.patch('/allevents/:id', (req, res) => {
-  const patchevent = Allevents
-    .findById(req.params.id)
-    .then((Allevents) => {
-      if (Allevents) {
-        allevents.score = req.body.score
-        allevents
-          .save()
-          .then((updatedEvent) => {
-            res.json(updatedEvent)
-          })
-          .catch((err) => {
-            res.status(422)
-            res.json({ message: err.message })
-          })
-      } else {
-        res.status(404)
-        res.json({ message: 'Event not found!' })
-      }
+app.put('/allevents/:id',(req, res) => {
+  const eventId = Number(req.params.id)
+  const updates = req.body
+
+  Allevents.findById(req.params.id)
+    .then(entity => {
+      return entity.update(updates)
     })
-    .catch((err) => {
-      console.error(err)
-      res.status(500)
-      res.json({ message: 'Oops! There was an error getting the event. Please try again' })
+    .then(final => {
+      res.json(final)
+    })
+    .catch(error => {
+      res.status(500).send({
+        message: `Something went wrong`,
+        error
+      })
     })
 })
-
 
 //delete event
 app.delete('/allevents/:id', (req, res) => {
