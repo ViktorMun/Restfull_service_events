@@ -24,7 +24,7 @@ app.use(function(req, res, next) {
 
 app.use(bodyParser.json())
 console.log(new Date())
-var currentDate=new Date();
+
 
 //Find all events
 app.get('/allevents', (req, res) => {
@@ -81,12 +81,15 @@ app.get('/allevents/:id', (req, res) => {
 
 // Create event
 app.post('/allevents', (req, res) => {
-  const newevent = req.body
-  console.log(req.body.startdate)
+var nowDate = new Date();
+var date = nowDate.getFullYear()+'/'+(nowDate.getMonth()+1)+'/'+nowDate.getDate();
+console.log(date)
+console.log(req.body.startdate)
+const newevent = req.body
 if (req.body.startdate>req.body.enddate)
 return console.log('Start date should not be before the end date')
-//if (req.body.startdate )
-//return console.log('wrong again')
+if (date>req.body.startdate)
+return console.log('Start date should not be before current date')
 else
   Allevents.create(newevent)
     .then(entity => {
