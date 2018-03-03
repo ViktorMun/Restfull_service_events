@@ -5,6 +5,7 @@ module.exports = (sequelize, DataTypes) => {
     startdate: DataTypes.DATE,
     enddate: DataTypes.DATE,
     description: DataTypes.STRING,
+
     }, {});
   Allevents.associate = function(models) {
     // associations can be defined here

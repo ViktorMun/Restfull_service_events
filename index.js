@@ -42,7 +42,7 @@ app.get('/allevents', (req, res) => {
 //Find event by id
 app.get('/allevents/:id', (req, res) => {
 
-  const allevents = Allevents
+  const oneevent = Allevents
     .findById(req.params.id)
 
     .then((Allevents) => {
@@ -50,7 +50,50 @@ app.get('/allevents/:id', (req, res) => {
         res.json(Allevents)
       } else {
         res.status(404)
-        res.json({ message: 'product not found!' })
+        res.json({ message: 'Event not found!' })
+      }
+    })
+    .catch((err) => {
+      console.error(err)
+      res.status(500)
+      res.json({ message: 'Oops! There was an error getting the event. Please try again' })
+    })
+})
+
+//Create event
+app.post('/allevents', (req, res) => {
+  const newevent = req.body
+
+  Allevents.create(Allevents)
+    .then(entity => {
+      res.status(201)
+      res.json(entity)
+    })
+    .catch(err => {
+      res.status(422)
+      res.json({ message: err.message })
+    })
+})
+
+//change event
+app.patch('/allevents/:id', (req, res) => {
+  const patchevent = Allevents
+    .findById(req.params.id)
+    .then((Allevents) => {
+      if (Allevents) {
+        allevents.score = req.body.score
+        allevents
+          .save()
+          .then((updatedEvent) => {
+            res.json(updatedEvent)
+          })
+          .catch((err) => {
+            res.status(422)
+            res.json({ message: err.message })
+          })
+      } else {
+        res.status(404)
+        res.json({ message: 'Event not found!' })
       }
     })
     .catch((err) => {
@@ -61,6 +104,24 @@ app.get('/allevents/:id', (req, res) => {
 })
 
 
+//delete event
+app.delete('/allevents/:id', (req, res) => {
+  Allevents.findById(req.params.id)
+    .then(entity => {
+      return entity.destroy()
+    })
+    .then(_ => {
+      res.send({
+        message: 'The event was deleted succesfully'
+      })
+    })
+    .catch(error => {
+      res.status(500).send({
+        message: `Something went wrong`,
+        error
+      })
+    })
+})
 
 
 app.listen(port, () => {
