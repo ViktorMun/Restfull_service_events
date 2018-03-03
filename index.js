@@ -23,15 +23,14 @@ app.use(function(req, res, next) {
 })
 
 app.use(bodyParser.json())
-
+console.log(new Date())
 
 //Find all events
 app.get('/allevents', (req, res) => {
   const allevents = Allevents
     .findAll({
   attributes: ['title', 'startdate', 'enddate'],
-  where: {startdate: {
-           [Op.gt]: new Date()}
+  where: {startdate:  {[Op.gt]: new Date()}
  }})
     .then((allevents) => {
   res.json(allevents)
@@ -64,21 +63,14 @@ app.get('/allevents/:id', (req, res) => {
 })
 
 
-var date = Date.now();
-//var startTime = startDate.getTime(), endTime = endDate.getTime();
-
-
-
 //Create event
 app.post('/allevents', (req, res) => {
-
   const newevent = req.body
-
-  Allevents.create(Allevents)
+  console.log(newevent)
+  Allevents.create(newevent)
     .then(entity => {
       res.status(201)
       res.json(entity)
-      //if (startTime>endTime) {alert("Cannot ")}
     })
     .catch(err => {
       res.status(422)
