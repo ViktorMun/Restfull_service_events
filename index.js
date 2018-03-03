@@ -10,7 +10,9 @@ const app = express()
   .use(cors())
   .use(bodyParser.json())
 
-const { Allevents } = db
+const {
+  Allevents
+} = db
 
 var sequelize = new Sequelize('postgres://postgres:secret@localhost:5432/postgres')
 
@@ -30,17 +32,22 @@ console.log(new Date())
 app.get('/allevents', (req, res) => {
   const allevents = Allevents
     .findAll({
-  attributes: ['title', 'startdate', 'enddate'],
-  where: {startdate:  {[Op.gt]: new Date()}
- }})
+      attributes: ['title', 'startdate', 'enddate'],
+      where: {
+        startdate: {
+          [Op.gt]: new Date()
+        }
+      }
+    })
     .then((allevents) => {
-  res.json(allevents)
-      ;
+      res.json(allevents);
     })
     .catch((err) => {
       console.error(err)
       res.status(500)
-      res.json({ message: 'Oops! There was an error getting the events. Please try again' })
+      res.json({
+        message: 'Oops! There was an error getting the events. Please try again'
+      })
     })
 })
 
@@ -53,58 +60,48 @@ app.get('/allevents/:id', (req, res) => {
         res.json(Allevents)
       } else {
         res.status(404)
-        res.json({ message: 'Event not found!' })
+        res.json({
+          message: 'Event not found!'
+        })
       }
     })
     .catch((err) => {
       console.error(err)
       res.status(500)
-      res.json({ message: 'Oops! There was an error getting the event. Please try again' })
+      res.json({
+        message: 'Oops! There was an error getting the event. Please try again'
+      })
     })
 })
 
-
-// Create event
-// app.post('/allevents', (req, res) => {
-//   const newevent = req.body
-//   console.log(newevent)
-//   Allevents.create(newevent)
-//     .then(entity => {
-//       res.status(201)
-//       res.json(entity)
-//     })
-//     .catch(err => {
-//       res.status(422)
-//       res.json({ message: err.message })
-//     })
-// })
-
 // Create event
 app.post('/allevents', (req, res) => {
-var nowDate = new Date();
-var date = nowDate.getFullYear()+'/'+(nowDate.getMonth()+1)+'/'+nowDate.getDate();
-console.log(date)
-console.log(req.body.startdate)
-const newevent = req.body
-if (req.body.startdate>req.body.enddate)
-return console.log('Start date should not be before the end date')
-if (date>req.body.startdate)
-return console.log('Start date should not be before current date')
-else
-  Allevents.create(newevent)
+  var nowDate = new Date();
+  var date = nowDate.getFullYear() + '-' + (nowDate.getMonth() + 1) + '-' + nowDate.getDate();
+  console.log(date)
+  console.log(req.body.startdate)
+  const newevent = req.body
+  if (req.body.startdate > req.body.enddate)
+    return console.log('Start date should not be before the end date')
+  if (date > req.body.startdate)
+    return console.log('Start date should not be before current date')
+  else
+    Allevents.create(newevent)
     .then(entity => {
       res.status(201)
       res.json(entity)
     })
     .catch(err => {
       res.status(422)
-      res.json({ message: err.message })
+      res.json({
+        message: err.message
+      })
     })
 })
 
 
 //change event
-app.put('/allevents/:id',(req, res) => {
+app.put('/allevents/:id', (req, res) => {
   const eventId = Number(req.params.id)
   const updates = req.body
 
